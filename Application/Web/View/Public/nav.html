@@ -1,0 +1,36 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Brand</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="navbar-form navbar-left" role="search" style="width: 40%;margin-right: 10%">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="请输入地名、文章标题、问答标题">
+                    <span class="input-group-addon">搜索</span>
+                </div>
+            </form>
+            <ul class="nav navbar-nav">
+                <li><i style="background:url('{$userinfo.avator}') no-repeat;width: 35px;height: 35px;display: block;background-size:100% 100%; margin-top: 8px;border-radius: 70%"></i></li>
+                <li><a href="{:U('Web/userCenter/index')}"style="color:#2d78f4;">{$userinfo.nickname}</a></li>
+                <li><a href="{:U('Web/QA/index')}">问答社区</a></li>
+                <li><a href="{:U('Web/Image/index')}">发布线路</a></li>
+                <li><a href="{:U('Web/Way/index')}">路线中心</a></li>
+                <li><a href="#">景点百科</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">账号 <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">个人资料</a></li>
+                        <li><a href="#">相册中心</a></li>
+                        <li><a href="#">收藏路线</a></li>
+                        <!--<li role="separator" class="divider"></li>-->
+                        <li><a href="{:U('Web/Setting/logout')}">退出</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>

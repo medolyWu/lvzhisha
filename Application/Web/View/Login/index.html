@@ -1,0 +1,241 @@
+<include file="Public/header" />
+<body>
+<!-- Form area -->
+<div class="admin-form">
+  <div class="container">
+
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Widget starts -->
+            <div class="widget worange">
+              <!-- Widget head -->
+              <div class="widget-head">
+                  <div class="login-head hidden">
+                      <small class="text-primary" style="margin-left: 10px;font-size: 14px">登陆旅之沙</small>
+                      <small class="text-primary pull-right" style="margin-right: 10px;font-size: 14px;cursor: pointer">注册账号 <span class="glyphicon glyphicon-chevron-right "></span></small>
+                  </div>
+                  <div class="register-head">
+                      <small class="text-primary" style="margin-left: 10px;font-size: 14px">注册旅之沙</small>
+                      <small class="text-primary pull-right" style="margin-right: 10px;font-size: 14px;cursor: pointer">登陆 <span class="glyphicon glyphicon-chevron-right "> </span></small>
+                  </div>
+              </div>
+
+              <div class="widget-content">
+                <div class="padd">
+                  <!-- Login form -->
+                  <form class="form-horizontal login-form hidden" method="post" action="{:U('Web/Login/login')}">
+                    <!-- Email -->
+                    <div class="form-group">
+                      <label class="control-label col-lg-3" for="email">email</label>
+                      <div class="col-lg-8">
+                        <input type="text" class="form-control" id="email" name="email" placeholder="email">
+                      </div>
+                        <div class="col-lg-1">
+                            <h3><span class="glyphicon"></span></h3>
+                        </div>
+                    </div>
+                    <!-- Password -->
+                    <div class="form-group">
+                      <label class="control-label col-lg-3" for="iPassword">密码</label>
+                      <div class="col-lg-8">
+                        <input type="password" class="form-control" name="password" id="iPassword" placeholder="密码">
+                      </div>
+                        <div class="col-lg-1">
+                            <h3><span class="glyphicon"></span></h3>
+                        </div>
+                    </div>
+                    <!-- Remember me checkbox and sign in button -->
+                    <div class="form-group">
+                        <label class="control-label col-lg-3" for="inputPassword"></label>
+                        <div class="col-lg-9">
+                            <div class="checkbox" >
+                                <label>
+                                    <input type="checkbox"> 记住密码
+                                </label>
+                                <label class="pull-right">
+                                    <a href="{:U('Web/Login/getbackPasswd')}">找回密码 <span class="glyphicon glyphicon-question-sign"></span></a>
+                                </label>
+                            </div>
+                        </div>
+
+					</div>
+                        <div class="col-lg-9 col-lg-offset-2">
+							<button type="submit" class="btn btn-danger" style="width: 50%">登陆</button>
+						</div>
+                    <br />
+                  </form>
+                   <!-- 注册-->
+                    <form class="form-horizontal register-form " method="post" action="{:U('Web/Login/register')}">
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-3" for="username">用户名</label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="username" name="username" placeholder="用户名不能少于5位">
+                            </div>
+                            <div class="col-lg-1">
+                                <h3><span class="glyphicon"></span></h3>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-lg-3" for="inputEmail">邮箱</label>
+                            <div class="col-lg-8">
+                                <input type="text" class="form-control" id="inputEmail" name="email" placeholder="邮箱">
+                            </div>
+                            <div class="col-lg-1">
+                                <h3><span class="glyphicon"></span></h3>
+                            </div>
+                        </div>
+                        <!-- Password -->
+                        <div class="form-group">
+                            <label class="control-label col-lg-3" for="inputPassword">密码</label>
+                            <div class="col-lg-8">
+                                <input type="password" class="form-control"  name="password" id="inputPassword" placeholder="密码至少为5位数字加字母或者下划线">
+                            </div>
+                            <div class="col-lg-1">
+                                <h3><span class="glyphicon"></span></h3>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-lg-offset-2">
+                            <button type="submit" class="btn btn-danger" style="width:80%">注册</button>
+                        </div>
+                        <div class="col-lg-4 ">
+                            <h4 class="tips"></h4>
+                        </div>
+                        <br />
+                    </form>
+				</div>
+                </div>
+              
+                <div class="widget-foot">
+                    <div class="btn-group" >
+                        <a href="{$code_url}"><img src="{$Think.const.SITE_IMAGE_URL}/weibo.png" style="width:20px;height: 20px;margin-left: 30px;" alt="微博登陆" class="img-rounded"></a>
+                        <a href="#" ><img src="{$Think.const.SITE_IMAGE_URL}/qq.png" style="width:20px;height: 20px;margin-left: 30px;" alt="微信登陆" class="img-rounded"></a>
+                        <a href="#"><img src="{$Think.const.SITE_IMAGE_URL}/weixin.png" style="width:20px;height: 20px;margin-left: 30px;" alt="注册登陆" class="img-rounded"></a>
+                    </div>
+                </div>
+            </div>  
+      </div>
+    </div>
+  </div> 
+</div>
+
+
+<include file="Public/foot-bottom" />
+<script type="text/javascript" src="{$Think.const.SITE_JAVASCRIPT_URL}/jquery.form.min.js"></script>
+<script>
+    $('.login-head small:last').on('click',function(){
+        $('.register-head').addClass('show');
+        $('.register-head').removeClass('hidden');
+        $('.login-head').addClass('hidden');
+        $('.login-head').removeClass('show');
+
+        $('.register-form').addClass('show');
+        $('.register-form').removeClass('hidden');
+        $('.login-form').addClass('hidden');
+        $('.login-form').removeClass('show');
+
+    });
+    $('.register-head small:last').on('click',function(){
+        $('.register-head').addClass('hidden');
+        $('.register-head').removeClass('show');
+        $('.login-head').addClass('show');
+        $('.login-head').removeClass('hidden');
+
+        $('.register-form').addClass('hidden');
+        $('.register-form').removeClass('show');
+        $('.login-form').addClass('show');
+        $('.login-form').removeClass('hidden');
+    });
+    //注册
+    $('.register-form').submit(function() {
+        var options = {
+            beforeSubmit: function(){
+                $('.tips').html('<font color="#bbb">数据正在提交中..</font>');
+            },  //提交前的回调函数
+            success: function(response){
+                if(!response.status){
+                    $('.tips').html('<font color="red">'+response.message+'</font>');
+                }else{
+                    $('.tips').html('<font color="#2d78f4">注册成功</font>');
+                    setTimeout(function(){
+                        window.location.href = "{:U('Web/Login/step')}";
+                    },2000);
+                }
+            },      //提交后的回调函数
+            dataType: 'json'           //html(默认), xml, script, json...接受服务端返回的类型
+            //timeout: 3000               //限制请求的时间，当请求大于3秒后，跳出请求
+        }
+        $(this).ajaxSubmit(options);
+        return false; //阻止表单默认提交
+    });
+
+    //用户名输入状态  /^[a-zA-Z0-9_]{".$X.",".$Y."}$/
+    $('input[name=username],input[name=password]').on('keyup',function(){
+        var regexp = /^[a-zA-Z0-9_]{7,30}$/gi;
+        if(regexp.test($(this).val())){
+            $(this).parents('.form-group').addClass('has-success');
+            $(this).parents('.form-group').find('.glyphicon').removeClass('glyphicon-remove');
+            $(this).parents('.form-group').find('.glyphicon').addClass('glyphicon-ok');
+            $(this).parents('.form-group').find('h3').addClass('text-success');
+            $(this).parents('.form-group').find('h3').removeClass('text-danger');
+        }else{
+            $(this).parents('.form-group').removeClass('has-success');
+            $(this).parents('.form-group').find('.glyphicon').removeClass('glyphicon-ok');
+            $(this).parents('.form-group').find('.glyphicon').addClass('glyphicon-remove');
+            $(this).parents('.form-group').find('h3').removeClass('text-success');
+            $(this).parents('.form-group').find('h3').addClass('text-danger');
+        }
+    });
+    //email输入状态
+    $('.register-form input[name=email]').on('keyup',function(){
+        var regexp = /^\w+((-|\.)\w+)*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]{2,3}$/gi;
+        var email = $(this).val();
+        if(regexp.test(email)){
+			$.ajax({
+                type: "POST",
+                url: "{:U('Web/Login/checkEmail')}",
+                data: {email:email},
+                success: function(response){
+                    if(!response.status){
+                        $('.register-form input[name=email]').parents('.form-group').find('.glyphicon').removeClass('glyphicon-ok');
+                        $('.register-form input[name=email]').parents('.form-group').find('.glyphicon').addClass('glyphicon-remove');
+                        $('.register-form input[name=email]').parents('.form-group').find('h3').removeClass('text-success');
+                        $('.register-form input[name=email]').parents('.form-group').find('h3').addClass('text-danger');
+                        $('.register-form input[name=email]').removeClass('has-success');
+                    }else{
+                        $('.register-form input[name=email]').parents('.form-group').addClass('has-success');
+                        $('.register-form input[name=email]').parents('.form-group').find('.glyphicon').removeClass('glyphicon-remove');
+                        $('.register-form input[name=email]').parents('.form-group').find('.glyphicon').addClass('glyphicon-ok');
+                        $('.register-form input[name=email]').parents('.form-group').find('h3').addClass('text-success');
+                        $('.register-form input[name=email]').parents('.form-group').find('h3').removeClass('text-danger');
+                    }
+                }
+            });
+        }else{
+            $(this).parents('.form-group').removeClass('has-success');
+            $(this).parents('.form-group').find('.glyphicon').removeClass('glyphicon-ok');
+            $(this).parents('.form-group').find('.glyphicon').addClass('glyphicon-remove');
+            $(this).parents('.form-group').find('h3').removeClass('text-success');
+            $(this).parents('.form-group').find('h3').addClass('text-danger');
+        }
+    });
+
+    //email输入状态
+    $('.login-form input[name=email]').on('keyup',function(){
+        var regexp = /^\w+((-|\.)\w+)*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]{2,3}$/gi;
+        var email = $(this).val();
+        if(regexp.test(email)){
+            $(this).parents('.form-group').addClass('has-success');
+            $(this).parents('.form-group').find('.glyphicon').removeClass('glyphicon-remove');
+            $(this).parents('.form-group').find('.glyphicon').addClass('glyphicon-ok');
+            $(this).parents('.form-group').find('h3').addClass('text-success');
+            $(this).parents('.form-group').find('h3').removeClass('text-danger');
+        }else{
+            $(this).parents('.form-group').removeClass('has-success');
+            $(this).parents('.form-group').find('.glyphicon').removeClass('glyphicon-ok');
+            $(this).parents('.form-group').find('.glyphicon').addClass('glyphicon-remove');
+            $(this).parents('.form-group').find('h3').removeClass('text-success');
+            $(this).parents('.form-group').find('h3').addClass('text-danger');
+        }
+    });
+</script>

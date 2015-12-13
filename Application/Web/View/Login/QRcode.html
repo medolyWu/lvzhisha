@@ -1,0 +1,56 @@
+<include file="Public/header" />
+<body>
+<!-- Form area  -->
+<div class="admin-form">
+  <div class="container">
+
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Widget starts -->
+            <div class="widget worange">
+              <!-- Widget head -->
+              <div class="widget-head">
+                  <div class="login-head">
+                      <small class="text-primary" style="margin-left: 10px;font-size: 14px">登陆旅之沙</small>
+                      <small class="text-primary pull-right" style="margin-right: 10px;font-size: 14px;cursor: pointer">注册账号 <span class="glyphicon glyphicon-chevron-right "></span></small>
+                  </div>
+              </div>
+
+              <div class="widget-content">
+                <div class="padd">
+                  <img src="{$erweima}" id="erweima" style="margin-left: 25%;width:200px;height:200px;">
+				</div>
+                </div>
+                <div class="widget-foot">
+                    <div class="btn-group" >
+                        <a href="{$code_url}"><img src="{$Think.const.SITE_IMAGE_URL}/weibo.png" style="width:20px;height: 20px;margin-left: 30px;" alt="微博登陆" class="img-rounded"></a>
+                        <a href="#" ><img src="{$Think.const.SITE_IMAGE_URL}/qq.png" style="width:20px;height: 20px;margin-left: 30px;" alt="微信登陆" class="img-rounded"></a>
+                        <a href="#"><img src="{$Think.const.SITE_IMAGE_URL}/weixin.png" style="width:20px;height: 20px;margin-left: 30px;" alt="注册登陆" class="img-rounded"></a>
+                    </div>
+                </div>
+            </div>  
+      </div>
+    </div>
+  </div> 
+</div>
+<include file="Public/foot-bottom" />
+<script>
+    request();
+    function request(){
+        $.ajax({
+            type: "get",
+            url: "{:U('WeChat/Login/login',array('token'=>$token))}",
+            statusCode: {201: function(response) {
+                $('#erweima').attr('src',response.avator);
+                request();
+            },
+                200:function(response){
+                    window.location.href = response.url;
+                },
+                204:function(){
+                    request();
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <!-- Title and other stuffs -->
+    <title>旅之沙</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="">
+    <!-- Stylesheets -->
+    <link href="{$Think.const.SITE_STYLE_URL}/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="{$Think.const.SITE_STYLE_URL}/font-awesome.css">
+    <link href="{$Think.const.SITE_STYLE_URL}/style.css" rel="stylesheet">
+
+    <!-- HTML5 Support for IE -->
+    <!--[if lt IE 9]>
+    <script src="{$Think.const.SITE_JAVASCRIPT_URL}/html5shim.js"></script>
+    <![endif]-->
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{$Think.const.SITE_IMAGE_URL}/favicon/favicon.png">
+</head>
+
+<body>
+
+<!-- Form area -->
+<div class="error-page">
+    <div class="container" style="margin-top: 30%">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Widget starts -->
+                <div class="widget">
+                    <!-- Widget head -->
+                    <div class="widget-head">
+                        <h4 class="text-primary" style="margin-right: 10px;font-size: 14px;cursor: pointer"><span class="glyphicon glyphicon-exclamation-sign"></span> 旅之沙温馨小tips</h4>
+                    </div>
+
+                    <div class="widget-content">
+                        <div class="padd error">
+                            <h2 style="margin-top: 20px;margin-bottom: 30px;">{$tips}</h2>
+                            请扫描旅之沙网站的二维码 <a style="float: right;margin-right: 20px" href="{:U('Web/WeiXin/bindAccount')}">重新扫码</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

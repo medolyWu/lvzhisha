@@ -1,0 +1,126 @@
+<include file="Public/header" />
+<body>
+<!-- Form area -->
+<div style="width:60%;margin:auto;">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Widget starts -->
+            <div class="widget worange" style="min-height:350px">
+              <!-- Widget head -->
+              <div class="widget-head">
+                  <div class="login-head">
+                      <small class="text-primary" style="margin-left: 10px;font-size: 14px">请输入您要找回密码的帐号</small>
+                  </div>
+              </div>
+              <div class="widget-content">
+                <div class="row" style="margin-top: 25px;">
+                    <div  class="col-lg-4 "><h3  style="margin-left: 30%;"><font style="color:#2d78f4;font-size: 30px;">01</font> 账号信息 <span class="glyphicon glyphicon-chevron-right pull-right"></span></h3></div>
+                    <div  class="col-lg-4 "><h3  style="margin-left: 30%;color: #b2b2b2"><font style="font-size: 30px;">02</font> 邮箱验证 <span class="glyphicon glyphicon-chevron-right pull-right"></span></h3></div>
+                    <div  class="col-lg-4 "><h3  style="margin-left: 30%;color: #b2b2b2"><font style="font-size: 30px;">03</font> 修改密码 </h3></div>
+                </div>
+                <div class="padd" style="margin-top: 25px;">
+                  <form class="form-horizontal login-form" method="post" action="{:U('Web/Login/getbackPasswd')}">
+                      <!-- Email -->
+                      <div class="form-group">
+                          <div class="col-lg-8 col-lg-offset-2">
+                              <div class="input-group input-group-lg">
+                                  <span class="input-group-addon" >Email</span>
+                                  <input type="text" class="form-control" placeholder="请输入Email" name="email" aria-describedby="sizing-addon1">
+                              </div>
+                          </div>
+                          <div class="col-lg-1">
+                              <h2><span class="glyphicon"></span></h2>
+                          </div>
+                      </div>
+                      <!-- Password -->
+                      <div class="form-group">
+                          <div class="col-lg-8 col-lg-offset-2">
+                              <div class="input-group input-group-lg">
+                                  <span class="input-group-addon" >Verify</span>
+                                  <input type="text" class="form-control" placeholder="验证码" name="captcha" aria-describedby="sizing-addon1">
+                                  <span class="input-group-addon" style="padding: 0px;padding-left: 2px;padding-right: 2px;"><img src="{:U('Web/Login/Captcha')}" onclick="this.src='{:U('Web/Login/Captcha')}?d='+Math.random();" style="width:100px;height:40px;"></span>
+                              </div>
+                          </div>
+                          <div class="col-lg-1">
+                              <h2><span class="glyphicon"></span></h2>
+                          </div>
+                      </div>
+                      <div class="col-lg-5 col-lg-offset-2">
+                          <button type="submit" class="btn btn-danger" style="width: 80%">下一步</button>
+                      </div>
+                      <div class="col-lg-4 ">
+                          <h3 class="tips"></h3>
+                      </div>
+                      <br />
+                  </form>
+                </div>
+              </div>
+            </div>  
+      </div>
+    </div>
+  </div> 
+</div>
+<include file="Public/foot-bottom" />
+<script type="text/javascript" src="{$Think.const.SITE_JAVASCRIPT_URL}/jquery.form.min.js"></script>
+<script>
+    //提交
+    $('form').submit(function() {
+        var options = {
+            beforeSubmit: function(){
+                $('.tips').html('<font color="#bbb">数据正在提交中..</font>');
+            },  //提交前的回调函数
+            success: function(response){
+                if(!response.status){
+                    $('.tips').html('<font color="red">'+response.message+'</font>');
+                }else{
+                    $('.tips').html('<font color="#2d78f4">'+response.message+'</font>');
+                    setTimeout(function(){
+                        window.location.href = response.url;
+                    },2000);
+                }
+            },      //提交后的回调函数
+            dataType: 'json'           //html(默认), xml, script, json...接受服务端返回的类型
+            //timeout: 3000               //限制请求的时间，当请求大于3秒后，跳出请求
+        }
+        $(this).ajaxSubmit(options);
+        return false; //阻止表单默认提交
+    });
+
+    //用户名输入状态  /^[a-zA-Z0-9_]{".$X.",".$Y."}$/
+    $('input[name=repassword],input[name=password]').on('keyup',function(){
+        var regexp = /^[a-zA-Z0-9_]{7,30}$/gi;
+        if(regexp.test($(this).val())){
+            $(this).parents('.form-group').addClass('has-success');
+            $(this).parents('.form-group').find('.glyphicon').removeClass('glyphicon-remove');
+            $(this).parents('.form-group').find('.glyphicon').addClass('glyphicon-ok');
+            $(this).parents('.form-group').find('h2').addClass('text-success');
+            $(this).parents('.form-group').find('h2').removeClass('text-danger');
+        }else{
+            $(this).parents('.form-group').removeClass('has-success');
+            $(this).parents('.form-group').find('.glyphicon').removeClass('glyphicon-ok');
+            $(this).parents('.form-group').find('.glyphicon').addClass('glyphicon-remove');
+            $(this).parents('.form-group').find('h2').removeClass('text-success');
+            $(this).parents('.form-group').find('h2').addClass('text-danger');
+        }
+    });
+
+    //email输入状态
+    $('input[name=email]').on('keyup',function(){
+        var regexp = /^\w+((-|\.)\w+)*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]{2,3}$/gi;
+        var email = $(this).val();
+        if(regexp.test(email)){
+            $(this).parents('.form-group').addClass('has-success');
+            $(this).parents('.form-group').find('.glyphicon').removeClass('glyphicon-remove');
+            $(this).parents('.form-group').find('.glyphicon').addClass('glyphicon-ok');
+            $(this).parents('.form-group').find('h2').addClass('text-success');
+            $(this).parents('.form-group').find('h2').removeClass('text-danger');
+        }else{
+            $(this).parents('.form-group').removeClass('has-success');
+            $(this).parents('.form-group').find('.glyphicon').removeClass('glyphicon-ok');
+            $(this).parents('.form-group').find('.glyphicon').addClass('glyphicon-remove');
+            $(this).parents('.form-group').find('h2').removeClass('text-success');
+            $(this).parents('.form-group').find('h2').addClass('text-danger');
+        }
+    });
+</script>

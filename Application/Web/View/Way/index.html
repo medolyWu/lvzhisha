@@ -1,0 +1,186 @@
+﻿<include file="Public/header" />
+<style>
+    .waybutton{
+
+    }
+    .list-l{
+        margin-top: 5px;
+        border-bottom: solid 1px #D5D5D5;
+    }
+</style>
+<!-- 顶部导航栏 -->
+{~W('Nav/Test')}
+<!-- 顶部导航栏 结束-->
+<div class="container-fluid" style="margin-left: 5%;margin-right:5%;margin-top:16px;">
+<div class="row">
+    <div class="panel panel-default" style="margin-top: 5px;margin-bottom: 5px;background:rgba(255,255,255,0.6) none repeat scroll 0 0 !important;">
+        <div class="panel-body">
+            <h3><span class="glyphicon glyphicon-road"></span> 路线中心</h3>
+            <div class="row">
+                <div class="input-group" style="width: 20%;float: left">
+                    <span class="input-group-addon" id="start-city">始发城市</span>
+                    <input type="text" class="form-control start-city" placeholder="始发城市" aria-describedby="start-city">
+                </div>
+                <div class="input-group" style="width: 20%;float: left;margin-left: 20px;">
+                    <span class="input-group-addon" id="end-city">终点城市</span>
+                    <input type="text" class="form-control end-city" placeholder="终点城市" aria-describedby="end-city">
+                </div>
+            </div>
+            <!--<button class="btn btn-info">Button</button>
+            <button class="btn btn-default">按钮2</button>-->
+            <br/>
+            <br/>
+        </div>
+    </div>
+    <div class="col-md-3 navmenu_parent"  style="background:rgba(255,255,255,0.8) none repeat scroll 0 0 !important;">
+        <div class="bs-example bs-example-tabs" data-example-id="togglable-tabs" style="margin-top: 12px;">
+            <ul id="myTabs" class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active" style="width: 50%"><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Home</a></li>
+                <li role="presentation" class="" style="width: 50%"><a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" aria-expanded="false">Profile</a></li>
+            </ul>
+            <div id="myTabContent" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade active in" id="home" aria-labelledby="home-tab">
+                    <div class="row list-l">
+                    <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;"/></div>
+                    <div class="col-md-10">
+                        <h3>列表页标题</h3>
+                        <p>列表页内容</p>
+                    </div>
+                </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
+                       <div class="row list-l">
+                    <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;"/></div>
+                    <div class="col-md-10">
+                        <h3>列表页标题</h3>
+                        <p>列表页内容</p>
+                    </div>
+                </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                    <div class="row list-l">
+                        <div class="col-md-2"><img src="{$Think.const.SITE_IMAGE_URL}/fengjing.jpeg" style="width: 50px;height: 50px;margin-bottom: 5px;;"/></div>
+                        <div class="col-md-10">
+                            <h3>列表页标题</h3>
+                            <p>列表页内容</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="row" >
+            <div class="col-md-12" id="baidumap" style="min-height:720px;margin-bottom: 10px;"></div>
+        </div>
+        <div class="row">
+            <div class="rateit" data-rateit-resetable="false"></div>
+        </div>
+    </div>
+</div>
+</div>
+<include file="Public/foot"/>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mcFKx7aa0WB73SAW6b2IYQAP"></script>
+<script type="text/javascript" src="{$Think.const.SITE_JAVASCRIPT_URL}/jquery.form.min.js"></script>
+<script>
+    ShowMap('广州');
+    /**
+     * 根据城市查询
+     */
+    $(".start-city").on('keyup',function(){
+        ShowMap($(this).val());
+    });
+
+    function ShowMap(keyword){
+        map = null;
+        map = new BMap.Map("baidumap");
+        //type == 1?CentralLocation = new BMap.Point($('#longitude').val(),$('#latitude').val()):CentralLocation = $('input[name=xqcity]').val();
+       // type == 1? Multiple = 18: Multiple = 12;
+
+        map.centerAndZoom(keyword,16);
+        map.enableScrollWheelZoom();    //启用滚轮放大缩小，默认禁用
+        map.enableContinuousZoom();    //启用地图惯性拖拽，默认禁用
+        map.addControl(new BMap.NavigationControl());  //添加默认缩放平移控件
+        map.addControl(new BMap.OverviewMapControl()); //添加默认缩略地图控件
+        map.addControl(new BMap.OverviewMapControl({ isOpen: true, anchor: BMAP_ANCHOR_BOTTOM_RIGHT }));   //右下角，打开
+        Search = new BMap.LocalSearch(map);
+        Search.enableAutoViewport(); //允许自动调节窗体大小
+    }
+</script>
+
+

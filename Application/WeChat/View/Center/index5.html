@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html ng-app="lvzhisha">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width,height=device-height">
+    <script src="{$Think.const.SITE_PLUGIN_URL}/ionic/js/ionic.bundle.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{$Think.const.SITE_PLUGIN_URL}/ionic/css/ionic.min.css">
+    <script>
+        var l1 =  angular.module("lvzhisha",["ionic"]);
+        l1.run(function($rootScope){
+            //$rootScope.testvalue = 1;
+
+        });
+
+        l1.directive('exampleDirective', function() {
+            return {
+                restrict: 'E',
+                replace:true,
+                template: '<input  type="file" id="files"  name="file" accept="image/*" style="filter:alpha(opacity:0);opacity: 0;">',
+                link: function(scope, element, attr) {
+                    element.bind( "change", function() {
+                        var val = this.value;
+                        //console.log(val);return;
+                        var upLoadType = ' .jpg.gif.bmp.png.jpeg'; //['.jpg','.gif','.bmp','.png']; //可上传的格式
+                        var fileExt = val.substr(val.lastIndexOf(".")).toLowerCase(); //从字符串中抽出最后一次出现.之后的字符，并且转换成小写
+                        var result = upLoadType.indexOf(fileExt); //查找后缀名是否符合条件，如果符合返回>=0，如果不符合则返回负数;
+                        if (this.files.length === 0) {
+                            return;
+                        }
+                        if (!result) {
+                            return;
+                        }
+                        var html = '', i = 0, imagefile = this.files, fileArray = new Array();
+                        // 组织预览html
+                        var funDealtPreviewHtml = function() {
+                            file = imagefile[i];
+                            if (file && i < 3) {
+                                var reader = new FileReader();
+                                reader.readAsDataURL(file);
+                                reader.onload = function (e) {
+                                    fileArray[i] = e.target.result;
+                                    // 处理下配置参数和格式的html
+                                    html = '<div class="up-image">' +
+                                    '<i style="width:50px;">' +
+                                    '<img width="50" height="50" src="' + e.target.result + '">' +
+                                    '<div class="progress" style="position: relative;top:-25px;height: 10px;">' +
+                                    '<div style="width: 20%;" aria-valuemax="100" role="progressbar" class="progress-bar progress-bar-info progress_' + i + '"></div>' +
+                                    '</div>' +
+                                    '</i>' +
+                                    '<i class="up-delete hide"><img src="{$Think.const.SITE_IMAGE_URL}/jianhong.png" style="width: 13px;height: 13px"></i>' +
+                                    '</div>';
+                                    $('.up-td').append(html);
+                                    var formData = new FormData();
+                                    formData.append("file", imagefile[i]);
+                                    formData.append("i", i);
+                                    $.ajax({
+                                        url: "{:U('WeChat/Way/upload')}",
+                                        cache: false,
+                                        type: 'post',
+                                        processData: false,
+                                        contentType: false,
+                                        data: formData,
+                                        beforeSend: function () {
+                                            $('.progress_' + i).animate({width: '85%'}, (i + 1) * 3000);
+                                            //check();
+                                        },
+                                        success: function (response) {
+                                            $('.progress_' + response.i).animate({width: '100%'}, 1000, 'swing', function () {
+                                                $('.progress_' + response.i).parents('.up-image').append('<input type="hidden" name="image[]" value="' + response.picurl + '"/>');
+                                                $('.progress_' + response.i).parents('i').next().removeClass('hide');
+                                                $('.progress_' + response.i).parent().remove();
+                                                //check();
+                                            });
+                                        }
+                                    });
+                                    i++;
+                                    // 再接着调用此方法递归组成可以预览的html
+                                    funDealtPreviewHtml();
+                                }
+                            } else {
+                                // 走到这里说明文件html已经组织完毕，要把html添加到预览区
+                                //$('#up-td').append(html);
+                            }
+                        }
+                        funDealtPreviewHtml();
+                    });
+                }
+            }
+        });
+
+        l1.controller("myCtrl",['$scope','$ionicSideMenuDelegate','$ionicModal','$ionicActionSheet',function($scope,$ionicSideMenuDelegate,$ionicModal,$ionicActionSheet){
+            $scope.toggle = function(){
+                $ionicSideMenuDelegate.toggleLeft();
+            };
+            //模型操作
+            $ionicModal.fromTemplateUrl("my-modal.html", {
+                scope: $scope,
+                animation: "slide-in-up"
+            }).then(function(modal) {
+                $scope.modal = modal;
+            });
+            $scope.openModal = function() {
+                $scope.modal.show();
+            };
+            $scope.closeModal = function() {
+                $scope.modal.hide();
+            };
+            //上拉选择
+            $scope.show = function() {
+                // Show the action sheet
+                var hideSheet= $ionicActionSheet.show({
+                    cancelOnStateChange:true,
+                    cssClass:'action_s',
+                    titleText: "操作当前文章",
+                    buttons: [
+                        { text: "<b>分享</b>文章" },
+                        { text: "移动到..." }
+                    ],
+                    buttonClicked: function(index) {
+                        console.log('操作了第'+index+'个文章');
+                        return true;
+                    },
+                    cancelText: "取消",
+                    cancel: function() {
+                        // add cancel code..
+                        console.log('执行了取消操作');
+                        return true;
+                    },
+                    destructiveText: "删除",
+                    destructiveButtonClicked:function(){
+                        console.log('执行了删除操作');
+                        return true;
+
+                    }
+                });
+            };
+        }]);
+
+    </script>
+</head>
+<style>
+    .footer-dom{
+        color: #ffffff;padding: 0px;margin: 0px;
+    }
+    .up-image{
+        float: left;margin-left: 10px;
+    }
+    .up-delete{
+        position: relative; left: -8px;top:-42px;
+    }
+</style>
+
+<script id="my-modal.html" type="text/ng-template">
+    <div class="modal">
+        <ion-header-bar>
+            <h1 class="title">模型标题</h1>
+        </ion-header-bar>
+        <ion-content>
+            <div class="row">
+                <div class="bar bar-header item-input-inset">
+                    <label class="item-input-wrapper">
+                        <i class="icon ion-flag placeholder-icon"></i>
+                        <input type="text" placeholder="事件标题">
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="bar bar-header item-input-inset">
+                    <label class="item-input-wrapper">
+                        <i class="icon ion-clipboard placeholder-icon"></i>
+                        <input type="text" placeholder="描述信息">
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="row">
+                    <div class="col col-20">
+                        <div style="width: 50px;background: url({$Think.const.SITE_IMAGE_URL}/image-add.png);height:50px;">
+                        <example-directive></example-directive>
+                        </div>
+                    </div>
+                    <div class="col up-td"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-offset-33">
+                    <button class="button button-small button-light" style="width: 100px;" ng-click="closeModal()"> 取消 </button>
+                    <button  class="button button-small button-positive" style="margin-left: 10px;width:100px;"> 提交 </button>
+               </div>
+            </div>
+        </ion-content>
+    </div>
+</script>
+
+<body ng-controller="myCtrl">
+	<ion-side-menus>
+		<ion-side-menu-content>
+			<!--<ion-header-bar class="bar-positive">
+				<a class="button" ng-click="toggle();">切换</a>
+				<h1 class="title">ion-side-menu-content</h1>
+			</ion-header-bar>-->
+			<ion-content>
+                <div id="baidumap"></div>
+			</ion-content>
+		</ion-side-menu-content>
+		<ion-side-menu side="left" width="120">
+			<ion-content class="balanced-bg">
+
+			</ion-content>
+		</ion-side-menu>
+        <ion-footer-bar align-title="left" class="bar-positive">
+            <div style="text-align: center;width: 33.333%" ng-click="toggle()">
+                <h4  class="footer-dom icon ion-chatbox"></h4>
+                <h6 class="footer-dom">left</h6>
+            </div>
+            <div style="text-align: center;width: 33.333%" ng-click="openModal()">
+                <h4 class="footer-dom icon ion-home"></h4>
+                <h6 class="footer-dom">home</h6>
+            </div>
+                <div style="text-align: center;width: 33.333%" ng-click="show()">
+                <h4 class="footer-dom icon ion-person"></h4>
+                <h6 class="footer-dom">right</h6>
+            </div>
+        </ion-footer-bar>
+	</ion-side-menus>
+</body>
+</html>
+<script src="{$Think.const.SITE_JAVASCRIPT_URL}/jquery.js"></script> <!-- jQuery -->
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>  <!--微信jsjdk-->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mcFKx7aa0WB73SAW6b2IYQAP"></script>
+<script type="text/javascript" src="{$Think.const.SITE_JAVASCRIPT_URL}/jquery.form.min.js"></script>
+<script src="http://api.map.baidu.com/api?v=1.4&callback=initialize"></script>
+<script type="text/javascript">
+/*wx.config({
+    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    appId: "{$wxSdk.appid}", // 必填，公众号的唯一标识
+    timestamp: "{$wxSdk.timestamp}", // 必填，生成签名的时间戳
+    nonceStr: "{$wxSdk.noncestr}", // 必填，生成签名的随机串
+    signature: "{$wxSdk.signature}",// 必填，签名，见附录1
+    jsApiList: [
+        'getLocation',
+    ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+});*/
+var screenHeight= parseInt($(window).outerHeight()),screenWidth= parseInt($(window).outerWidth()),marknum  = 0,pointArray = [],map = null,wayObject = [];
+$('#baidumap,#select-way-modal').css('height',(screenHeight -50) + 'px');
+function initialize() {
+    //---------------------------------------------基础示例---------------------------------------------
+    map = new BMap.Map("baidumap",{minZoom:12,maxZoom:20});            // 创建Map实例
+    //map.centerAndZoom(new BMap.Point(116.4035,39.915),15);  //初始化时，即可设置中心点和地图缩放级别。
+    map.centerAndZoom('广州市', 18);                     // 初始化地图,设置中心点坐标和地图级别。
+    //map.disableDragging();
+    map.disableDoubleClickZoom();
+    //---------------------------------------------默认控件示例---------------------------------------------
+    //map.addControl(new BMap.NavigationControl());  //添加默认缩放平移控件
+    //---------------------------------------------版权控件---------------------------------------------
+    var cr = new BMap.CopyrightControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT});
+     //var bs = map.getBounds();
+     cr.addCopyright({id: 1, content: "<a href='#' style='font-size:12px;background:yellow'>我是自定义版权控件呀</a>"});
+     map.addControl(cr); //添加版权控件*/
+    // 定义一个控件类,即function
+    function ZoomControl(){
+        // 默认停靠位置和偏移量
+        this.defaultAnchor = BMAP_ANCHOR_TOP_RIGHT;
+        this.defaultOffset = new BMap.Size(11, 11);
+    }
+    // 通过JavaScript的prototype属性继承于BMap.Control
+    ZoomControl.prototype = new BMap.Control();
+    // 自定义控件必须实现自己的initialize方法,并且将控件的DOM元素返回
+    ZoomControl.prototype.initialize = function(map){
+        // 创建一个DOM元素
+        var div = document.createElement("div");
+        div.style.backgroundColor = "#dddddd";
+        div.innerHTML = '<img id="map-move" style="width:25px;height: 25px;margin:3px;" src="{$Think.const.SITE_IMAGE_URL}/pin_256px.png"/><img id="map-marker" style="width:25px;height: 25px;margin:3px;" src="{$Think.const.SITE_IMAGE_URL}/target_256px.png"/><img id="map-marker" style="width:25px;height: 25px;margin:3px;" src="{$Think.const.SITE_IMAGE_URL}/tag_256px.png"/>';
+        // 绑定事件
+        div.firstChild.onclick = function(e){
+            //map.disableDragging();
+            map.setDefaultCursor("crosshair");
+            var markerClick = function(e){
+                //创建小狐狸
+                var pt = new BMap.Point(e.point.lng,e.point.lat);
+                pointArray[marknum] = ['{"lng":"' + e.point.lng + '","lat":"' + e.point.lat + '"}'];
+
+                //var myIcon = new BMap.Icon("http://developer.baidu.com/map/jsdemo/img/fox.gif", new BMap.Size(150,80));
+                var marker2 = new BMap.Marker(pt);  // 创建标注
+                marker2.setTitle(marknum);
+                marknum += 1;
+                map.addOverlay(marker2);
+                markShowInfo(marker2);
+                map.removeEventListener('click',markerClick);
+            }
+            map.addEventListener("click",markerClick);
+        };
+        //定位
+        div.childNodes[1].onclick = function(e){
+            wx.getLocation({
+                type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+                success: function (res) {
+                    longtitude = res.longitude;
+                    latitude  =  res.latitude;
+                    $.get("{:U('WeChat/Way/getLocation')}",{'latitude':latitude,'longitude':longtitude},function(response){
+                        if(response.status){
+                            var pt1 = new BMap.Point(response.lng,response.lat);
+                            map.setCenter(pt1);
+                            pointArray[marknum] = ['{"lng":"' + response.lng + '","lat":"' + response.lat + '"}'];
+                            //var myIcon = new BMap.Icon("http://developer.baidu.com/map/jsdemo/img/fox.gif", new BMap.Size(150,80));
+                            var marker23 = new BMap.Marker(pt1);  // 创建标注
+                            marker23.setTitle(marknum);
+                            marknum += 1;
+                            map.addOverlay(marker23);
+                            markShowInfo(marker23);
+                        }else{
+                            alert(response.msg);
+                        }
+                    },'json');
+                }
+            });
+        }
+        div.childNodes[2].onclick = function(e){
+            alert(111);
+        }
+        // 添加DOM元素到地图中
+        $(map.getContainer()).append(div);
+        // 将DOM元素返回
+        return div;
+    }
+    // 创建控件
+    var myZoomCtrl = new ZoomControl();
+    // 添加到地图当中
+    map.addControl(myZoomCtrl);
+}
+
+/**
+ * 绑定覆盖物点击信息
+ */
+function markShowInfo(thisobj){
+    thisobj.addEventListener('dblclick',function(e){
+        var appElement = document.querySelector('[ng-controller=myCtrl]');
+        var $scope = angular.element(appElement).scope();
+        $scope.$apply(function () {
+            $scope.modal.show();
+        });
+        //$('#add-marker-info').addClass('active');
+        //$('#add-marker-info input[name=marknum]').val(this.getTitle());
+    });
+    thisobj.addEventListener('click',function(e){
+        //$('#xuanz').click();return;
+        if(jQuery.type(pointArray[this.getTitle()][1]) === 'undefined'){
+            return;
+        }
+        var markobj = $.parseJSON(pointArray[this.getTitle()][1]);
+        var imagehtml = "";
+        if(markobj.picpath){
+            var picpathArray = markobj.picpath.split(',');
+            var width = (260/picpathArray.length) - 5;
+            var height = picpathArray.length == 1?130:parseInt(260/picpathArray.length)-10;
+            for(var i = 0 ; i < picpathArray.length;i++){
+                switch (picpathArray.length){
+                    case 1:
+                        var margin_left = 15;
+                        break;
+                    case 2:
+                        var margin_left = i == 0?14:2;
+                        break;
+                    case 3:
+                        var margin_left = i == 0?15:3;
+                        break;
+                }
+                imagehtml += '<img src="' + UPYUN_URL + picpathArray[i] +'" alt="..." style="width:'+ width +'px;height:'+ height +'px;margin-left:'+ margin_left +'px;">';
+            }
+            imagehtml = '<div class="row">' + imagehtml + '</div>';
+        }
+        var sContent =
+                '<div class="thumbnail" style="width: 260px;">' +
+                imagehtml +
+                '<div class="caption">' +
+                '<h4 style="text-align: center;color:#2d78f4;font-weight:bold">'+ markobj.title +'</h4>' +
+                '<p>'+ markobj.desc +'</p>' +
+                '</div>';
+        var infoWindow = new BMap.InfoWindow(sContent);
+        this.openInfoWindow(infoWindow);
+    });
+}
+
+/**
+ * 删除添加的图片
+ */
+$('.up-td').delegate('.up-delete','click',function(){
+    $(this).parent().fadeOut(1000,'swing',function(){
+        $(this).remove();
+    });
+});
+
+/**
+ * 上传图片
+ */
+/*document.getElementById('files').onchange = function() {
+    var val = this.value;
+    var upLoadType = ' .jpg.gif.bmp.png.jpeg'; //['.jpg','.gif','.bmp','.png']; //可上传的格式
+    var fileExt = val.substr(val.lastIndexOf(".")).toLowerCase(); //从字符串中抽出最后一次出现.之后的字符，并且转换成小写
+    var result = upLoadType.indexOf(fileExt); //查找后缀名是否符合条件，如果符合返回>=0，如果不符合则返回负数;
+    if (this.files.length === 0) {
+        return;
+    }
+    if (!result) {
+        return;
+    }
+    var html = '', i = 0, imagefile = this.files, fileArray = new Array();
+    // 组织预览html
+    //var funDealtPreviewHtml = function() {
+    file = imagefile[i];
+    if (file && i < 3) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (e) {
+            fileArray[i] = e.target.result;
+            // 处理下配置参数和格式的html
+            html = '<div class="up-image">' +
+            '<i style="width:50px;">' +
+            '<img width="50" height="50" src="' + e.target.result + '">' +
+            '<div class="progress" style="position: relative;top:-25px;height: 10px;">' +
+            '<div style="width: 20%;" aria-valuemax="100" role="progressbar" class="progress-bar progress-bar-info progress_' + i + '"></div>' +
+            '</div>' +
+            '</i>' +
+            '<i class="up-delete hide"><img src="{$Think.const.SITE_IMAGE_URL}/jianhong.png" style="width: 13px;height: 13px"></i>' +
+            '</div>';
+            $('.up-td').append(html);
+            var formData = new FormData();
+            formData.append("file", imagefile[i]);
+            formData.append("i", i);
+            $.ajax({
+                url: "{:U('WeChat/Way/upload')}",
+                cache: false,
+                type: 'post',
+                processData: false,
+                contentType: false,
+                data: formData,
+                beforeSend: function () {
+                    $('.progress_' + i).animate({width: '85%'}, (i + 1) * 3000);
+                    check();
+                },
+                success: function (response) {
+                    $('.progress_' + response.i).animate({width: '100%'}, 1000, 'swing', function () {
+                        $('.progress_' + response.i).parents('.up-image').append('<input type="hidden" name="image[]" value="' + response.picurl + '"/>');
+                        $('.progress_' + response.i).parents('i').next().removeClass('hide');
+                        $('.progress_' + response.i).parent().remove();
+                        check();
+                    });
+                }
+            });
+            i++;
+            // 再接着调用此方法递归组成可以预览的html
+            funDealtPreviewHtml();
+        }
+    } else {
+        // 走到这里说明文件html已经组织完毕，要把html添加到预览区
+        //$('#up-td').append(html);
+    }
+    funDealtPreviewHtml();
+};*/
+/*
+$('input[name=title],textarea[name=description]').on('keyup',check);*/
+/*
+*//**
+ * 检测是否合法
+ */
+/*function check(){
+    if($('.progress').size() <=0 && $('input[name=title]').val() && $('textarea[name=description]').val()){
+        $('.submit-form').removeClass('hide');
+        $('.no-submit').addClass('hide');
+    }else{
+        $('.submit-form').addClass('hide');
+        $('.no-submit').removeClass('hide');
+    }
+}*/
+
+/**
+ * 提交覆盖物点添加信息
+ */
+/*var options = {
+     beforeSubmit: function(){
+     $('.model_tips').val('正在提交中..');
+     },  //提交前的回调函数
+     success: function(response){
+     $('.model_tips').val(response.message);
+     if(response.status){
+     setTimeout(function(){
+     window.location.href = response.url;
+     },2000);
+     }
+     },      //提交后的回调函数
+     dataType: 'json'           //html(默认), xml, script, json...接受服务端返回的类型
+     //timeout: 3000               //限制请求的时间，当请求大于3秒后，跳出请求
+     }*//*
+    *//* $(this).ajaxSubmit(options);
+     return false; //阻止表单默认提交*//*
+
+    var key = $('input[name=marknum]').val();
+    var imgpathstr = '';
+    $(".up-td input").each(function(index,obj){
+        imgpathstr += $(obj).val() + ',';
+    });
+    pointArray[key][1] = ['{"title":"' + $('input[name=title]').val() + '","desc":"' + $('textarea[name=description]').val() + '","picpath":"'+ imgpathstr.substr(0,imgpathstr.length-1) +'"}'];
+    $('.model_tips').text('路标点信息添加成功,1秒后关闭窗口');
+    setTimeout(function(){
+        //清空描述层的内容
+        $('input[name=title],textarea[name=description]').val('');
+        $('.up-td,.model_tips').html('');
+        $('#myModal').modal('hide');
+    },1000);
+});*/
+
+// 自动匹配关键词
+/*function G(id) {
+    return document.getElementById(id);
+}
+
+var start_ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+        {"input" : "start-way"
+            ,"location" : map
+        });
+var end_ac = new BMap.Autocomplete(    //建立一个自动完成的对象
+        {"input" : "end-way"
+            ,"location" : map
+        });
+var onhighlightSelect = function(e) {  //鼠标放在下拉列表上的事件
+    var str = "";
+    var _value = e.fromitem.value;
+    var value = "";
+    if (e.fromitem.index > -1) {
+        value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+    }
+    str = "FromItem<br />index = " + e.fromitem.index + "<br />value = " + value;
+
+    value = "";
+    if (e.toitem.index > -1) {
+        _value = e.toitem.value;
+        value = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+    }
+    str += "<br />ToItem<br />index = " + e.toitem.index + "<br />value = " + value;
+    G("searchResultPanel").innerHTML = str;
+};
+start_ac.addEventListener("onhighlight",onhighlightSelect);
+end_ac.addEventListener("onhighlight",onhighlightSelect);
+var myValue;
+var onconfirmSelect = function(e) {    //鼠标点击下拉列表后的事件
+    var _value = e.item.value;
+    myValue = _value.province +  _value.city +  _value.district +  _value.street +  _value.business;
+    G("searchResultPanel").innerHTML ="onconfirm<br />index = " + e.item.index + "<br />myValue = " + myValue;
+    setPlace();
+};
+
+start_ac.addEventListener("onconfirm",onconfirmSelect);
+end_ac.addEventListener("onconfirm",onconfirmSelect);
+function setPlace(){
+    map.clearOverlays();    //清除地图上所有覆盖物
+    function myFun(){
+        var pp = local.getResults().getPoi(0).point;    //获取第一个智能搜索的结果
+        wayObject.push(pp);
+        //map.centerAndZoom(pp, 18);
+        //map.addOverlay(new BMap.Marker(pp));    //添加标注
+    }
+    var local = new BMap.LocalSearch(map, { //智能搜索
+        onSearchComplete: myFun
+    });
+    local.search(myValue);
+}
+// 自动匹配关键词结束  end
+
+$('.submit-way').click(function(){
+    $('#select-way-modal').animate({height: '0px'}, "slow",function(){
+        $(this).addClass('hide');
+        var start = wayObject[0];
+        var end = wayObject[1];
+        map.setCenter(wayObject[0]);
+        //三种驾车策略：最少时间，最短距离，避开高速
+        var routePolicy = [BMAP_DRIVING_POLICY_LEAST_TIME,BMAP_DRIVING_POLICY_LEAST_DISTANCE,BMAP_DRIVING_POLICY_AVOID_HIGHWAYS];
+        map.clearOverlays();
+        search(start,end,routePolicy[1]);
+        function search(start,end,route){
+            var driving = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true},policy: route});
+            driving.search(start,end);
+        }
+    });
+});*/
+</script>

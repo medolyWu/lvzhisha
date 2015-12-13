@@ -1,0 +1,260 @@
+﻿<include file="Public/header" />
+<!-- 覆盖点添加描述信息层 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel"><span class="glyphicon glyphicon-flag"></span> 路线描述信息</h4>
+            </div>
+            <!--<form class="way-point-info" action="#" method="post">-->
+            <div class="modal-body">
+                    <input type="hidden" name="marknum">
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">事件标题:</label>
+                        <input type="text" class="form-control" id="recipient-name" name="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="control-label">描述信息:</label>
+                        <textarea class="form-control" id="message-text" name="desc"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div style="text-align: center;height: 100px" id="uploadlist"></div>
+                        <div id="uploadsuccesslist"></div>
+                    </div>
+
+            </div>
+            <div class="modal-footer">
+                <span class="model_tips" style="color:#2d78f4;width:70%;text-align: center;font-size: 14px;display: block;float:left;margin-top:5px;"></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary marksubmit">提交信息</button>
+            </div>
+            <!--</form>-->
+        </div>
+    </div>
+</div>
+<!-- 覆盖点添加描述信息层  end -->
+<!-- 顶部导航栏 -->
+{~W('Nav/Test')}
+<!-- 顶部导航栏 结束-->
+<div class="container-fluid" style="margin-left: 5%;margin-right:5%;margin-top:16px;">
+<div class="row">
+<div class="col-md-2 navmenu_parent">
+    <button type="button" class="btn btn-primary" id="tijiaojieguo">提交结果</button>
+</div>
+<div class="col-md-10">
+    <div class="row" >
+        <div class="col-md-12" id="baidumap" style="min-height:757px;margin-top:10px;margin-bottom: 10px;">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="rateit" data-rateit-resetable="false"></div>
+    </div>
+</div>
+
+</div>
+</div>
+<include file="Public/foot"/>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=mcFKx7aa0WB73SAW6b2IYQAP"></script>
+<!--加载鼠标绘制工具-->
+<script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+<link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
+<!-- 引用控制层插件样式 -->
+<link rel="stylesheet" href="{$Think.const.SITE_PLUGIN_URL}/zyUpload/control/css/zyUpload.css" type="text/css">
+<!-- 引用核心层插件 -->
+<script src="{$Think.const.SITE_PLUGIN_URL}/zyUpload/core/zyFile.js"></script>
+<!-- 引用控制层插件 -->
+<script src="{$Think.const.SITE_PLUGIN_URL}/zyUpload/control/js/zyUpload.js"></script>
+<!-- 引用初始化JS -->
+<script src="{$Think.const.SITE_PLUGIN_URL}/zyUpload/core/diaoyong.js"></script>
+<script type="text/javascript" src="{$Think.const.SITE_JAVASCRIPT_URL}/jquery.form.min.js"></script>
+<script>
+    // 百度地图API功能
+    var map = new BMap.Map('baidumap');
+    var poi = new BMap.Point(116.307852,40.057031);
+    map.centerAndZoom(poi, 16);
+    map.enableScrollWheelZoom();
+    //路线的样式
+    var styleOptions = {
+        strokeColor:"#2d78f4",    //边线颜色。
+        fillColor:"#2d78f4",      //填充颜色。当参数为空时，圆形将没有填充效果。
+        strokeWeight: 7,       //边线的宽度，以像素为单位。
+        strokeOpacity: 0.6,	   //边线透明度，取值范围0 - 1。
+        fillOpacity: 0.6,      //填充的透明度，取值范围0 - 1。
+        strokeStyle: 'solid' //边线的样式，solid或dashed。
+    }
+    //初始化获得路线及覆盖物的点
+    var initlines = $.parseJSON('{$lines}');
+    var initpoints = $.parseJSON('{$points}');
+    for(var j = 0 ;j < initpoints.length;j++) {
+        //alert(initpoints[j][0].lng);
+        var pt = new BMap.Point(initpoints[j][0].lng,initpoints[j][0].lat);
+        //var myIcon = new BMap.Icon(URL_IMAGE + "/mark.png", new BMap.Size(33,42));
+        var marker2 = new BMap.Marker(pt);  // 创建标注
+        map.addOverlay(marker2);
+        markShowInfo('mouseover',marker2,initpoints[j][1],0);
+    }
+    //初始化获得路线
+    var $line = [];
+    for(var k = 0 ;k < initlines.length;k++) {
+        $line.push(new BMap.Point(initlines[k].lng,initlines[k].lat));
+    }
+    var polyline1 = new BMap.Polyline($line,styleOptions);
+    map.addOverlay(polyline1);
+    //地图覆盖点及手绘路线点
+    var linesStr = '';
+    //实例化鼠标绘制工具
+    var drawingManager = new BMapLib.DrawingManager(map, {
+        isOpen: false, //是否开启绘制模式
+        enableDrawingTool: true, //是否显示工具栏
+        drawingToolOptions: {
+            anchor: BMAP_ANCHOR_TOP_RIGHT, //位置
+            offset: new BMap.Size(5, 5), //偏离值
+            drawingModes:[BMAP_DRAWING_MARKER,BMAP_DRAWING_POLYLINE]
+        },
+        polylineOptions: styleOptions //线的样式
+    });
+    //drawingManager.disableCalculate();
+    pointArray = [];
+    var marknum = 0;
+    drawingManager.addEventListener("markercomplete", function(e, overlay) {
+       // overlay.enableDragging();
+        //var myIcon = new BMap.Icon(URL_IMAGE + "/mark.png", new BMap.Size(33,42));
+       // overlay.setIcon(myIcon);
+        //记录地图覆盖物坐标点
+        var point = overlay.getPosition();
+        overlay.setTitle(marknum);
+        pointArray[marknum] = ['{"lng":"' + point.lng + '","lat":"' + point.lat + '"}'];
+        marknum += 1;
+
+        //绑定地图单击覆盖物事件
+        markShowInfo('click',overlay,'',1);
+        //创建右键菜单
+        var markerMenu=new BMap.ContextMenu();
+        markerMenu.addItem(new BMap.MenuItem("<div style='background: #2d78f4 no-repeat;width:60px;height:30px;margin-bottom:4px;margin-top: 4px;line-height: 30px;color:white;text-align: center;font-size:12px;'>添加描述</div>",function(){
+            $('#myModal').modal();
+            $('#myModal input[name=marknum]').val(overlay.getTitle());
+        },{width:70}));
+        map.addOverlay(overlay);
+        overlay.addContextMenu(markerMenu);
+    });
+
+    //添加鼠标绘制工具监听事件，用于获取绘制结果
+    drawingManager.addEventListener("overlaycomplete", function(e,obj) {
+        var PolylineObj = obj.overlay.getPath();
+        linesStr = '[';
+        for(var i = 0; i < PolylineObj.length;i++){
+            linesStr +=  '{"lng":"' + PolylineObj[i].lng + '","lat":"' + PolylineObj[i].lat + '"},'
+        }
+        linesStr = linesStr.substr(0,linesStr.length -1) + ']';
+    });
+
+    /**
+     * 提交地图绘制结果
+     */
+    $('#tijiaojieguo').click(function(){
+        var pointStr = '';
+        for(var i = 0 ;i<pointArray.length;i++){
+            if(pointArray[i][1]){
+                pointStr += '['+ pointArray[i][0] +','+ pointArray[i][1] +'],';
+            }else{
+                pointStr += '['+ pointArray[i][0] +'],';
+            }
+        }
+        var pointStr = '[' + pointStr.substr(0,pointStr.length - 1) + ']'
+
+        $.post("{:U('Web/Image/add')}",{lines:linesStr,points:pointStr},function(response){
+
+        });
+    });
+
+    /**
+     * 图片上传成功回调函数
+     */
+    function uploadback(index,imgurl){
+        $('#uploadsuccesslist').append("<input type='hidden' name='upload_"+ index +"' value='"+ imgurl +"' >");
+    }
+
+    /**
+     * 删除上传图片成功回调函数
+     */
+    function deleteback(index){
+        $('#uploadsuccesslist').find('input[name=upload_'+ index +']').remove();
+    }
+
+    /**
+     * 覆盖物点添加描述
+     */
+    $('.marksubmit').click(function(){
+		if($('input[name=title]').val() == ''){
+			$('.model_tips').html('<font style="color:red">写一下事件标题咯,么么哒</font>');
+			return;
+		}
+		if($('textarea[name=desc]').val() == ''){
+			$('.model_tips').html('<font style="color:red">写一下事件描述信息咯,么么哒</font>');
+			return;
+		}
+        //获取上传图片的地址
+        var key = $('input[name=marknum]').val();
+        var imgpathstr = '';
+        $("#uploadsuccesslist input").each(function(index,obj){
+            imgpathstr += $(obj).val() + ',';
+        });
+        pointArray[key][1] = ['{"title":"' + $('input[name=title]').val() + '","desc":"' + $('textarea[name=desc]').val() + '","picpath":"'+ imgpathstr.substr(0,imgpathstr.length-1) +'"}'];
+        $('.model_tips').text('路标点信息添加成功,1秒后关闭窗口');
+        setTimeout(function(){
+            //清空描述层的内容
+            $('input[name=title],textarea[name=desc]').val('');
+            $('#uploadsuccesslist,#preview,.model_tips').html('');
+            $('#myModal').modal('hide');
+        },1000)
+    });
+
+    /**
+     * 绑定覆盖物点击信息
+     */
+    function markShowInfo(mousetype,thisobj,showArray,isNewCreate){
+        thisobj.addEventListener(mousetype,function(e){
+            showArray = isNewCreate  === 1? $.parseJSON(pointArray[thisobj.getTitle()][1]) :showArray;
+            if(!showArray){
+                return;
+            }
+            var markobj = showArray;
+            var imagehtml = "";
+            if(markobj.picpath){
+                var picpathArray = markobj.picpath.split(',');
+                var width = (600/picpathArray.length) - 10;
+                var height = 600/picpathArray.length == 1?300:180;
+                for(var i = 0 ; i < picpathArray.length;i++){
+                    switch (picpathArray.length){
+                        case 1:
+                            var margin_left = 15;
+                            break;
+                        case 2:
+                            var margin_left = i == 0?17:5;
+                            break;
+                        case 3:
+                            var margin_left = i == 0?13:3;
+                            break;
+                    }
+                    imagehtml += '<img src="'+ picpathArray[i] +'" alt="..." style="width:'+ width +'px;height:'+ height +'px;margin-left:'+ margin_left +'px;">';
+                }
+                imagehtml = '<div class="row">' + imagehtml + '</div>';
+            }
+            var sContent =
+                    '<div class="thumbnail" style="max-width: 600px;margin-top: 10px;margin-bottom: 10px;">' +
+                    imagehtml +
+                    '<div class="caption">' +
+                    '<h3>'+ markobj.title +'</h3>' +
+                    '<p>'+ markobj.desc +'</p>' +
+                    '<p style="margin-top:6px;"><a href="#" class="btn btn-primary" role="button">浏览</a> <a href="#" class="btn btn-default" role="button">分享</a></p>' +
+                    '</div>';
+            var infoWindow = new BMap.InfoWindow(sContent);
+            thisobj.openInfoWindow(infoWindow);
+        });
+    }
+
+</script>
+
+

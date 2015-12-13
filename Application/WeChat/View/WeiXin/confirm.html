@@ -1,0 +1,70 @@
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <!-- Title and other stuffs -->
+    <title>旅之沙</title>
+    <meta name="keywords" content="Bootstrap" />
+    <meta name="description" content="Bootstrap" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="">
+    <!-- Stylesheets -->
+    <link href="{$Think.const.SITE_STYLE_URL}/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="{$Think.const.SITE_STYLE_URL}/font-awesome.css">
+    <link href="{$Think.const.SITE_STYLE_URL}/style.css" rel="stylesheet">
+    <!--<link rel="stylesheet" href="{$Think.const.SITE_STYLE_URL}/bootstrap-responsive.css">-->
+
+    <!-- HTML5 Support for IE -->
+    <!--[if lt IE 9]>
+    <script src="{$Think.const.SITE_JAVASCRIPT_URL}/html5shim.js"></script>
+    <![endif]-->
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{$Think.const.SITE_IMAGE_URL}/favicon/favicon.png">
+
+    <script src="{$Think.const.SITE_JAVASCRIPT_URL}/jquery.js"></script> <!-- jQuery -->
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+</head>
+<body>
+<!-- Form area  -->
+<div class="admin-form">
+    <div class="container">
+        <form action="{:U('WeChat/WeiXin/confirm')}" method="post" class="confirm-form">
+            <input name="numberid" value="{$numberid}" type="hidden">
+            <input name="confirm" value="true" type="hidden">
+            <button style="margin-left: 30%;margin-top:50%" type="button" class="btn btn-lg btn-info confirm-btn">确认登陆旅之沙</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    wx.config({
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: "{$wxSdk.appid}", // 必填，公众号的唯一标识
+        timestamp: "{$wxSdk.timestamp}", // 必填，生成签名的时间戳
+        nonceStr: "{$wxSdk.noncestr}", // 必填，生成签名的随机串
+        signature: "{$wxSdk.signature}",// 必填，签名，见附录1
+        jsApiList: [
+            'closeWindow'
+        ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    });
+    $('.confirm-btn').on('click',function(){
+        $.ajax({
+            type:'post',
+            url:"{:U('WeChat/WeiXin/confirm')}",
+            data:{'numberid':$('input[name=numberid]').val(),'confirm':$('input[name=confirm]').val()},
+            statusCode: {
+                400: function () {
+                    alert('发生错误,登陆失败');
+                    wx.closeWindow();
+                },
+                200:function(){
+                    wx.closeWindow();
+                }
+                }
+            });
+    });
+
+
+</script>

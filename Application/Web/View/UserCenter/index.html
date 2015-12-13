@@ -1,0 +1,406 @@
+﻿<include file="Public/header" />
+
+<link href="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/css/ShearPhoto.css" rel="stylesheet" type="text/css" media="all"><!--CSS文件，有点废话-->
+<script  type="text/javascript" src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/js/ShearPhoto.js" ></script><!--拉伸，截图的核心文件-->
+<script  type="text/javascript"  src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/js/move.js" ></script><!--拖拽DIV JS文件 -->
+<script  type="text/javascript"  src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/js/processdata.js" ></script><!--与服务器交互数据JS文件 -->
+<script  type="text/javascript"  src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/js/UpImg.js" ></script>     <!--上传截图的JS文件 -->
+<script  type="text/javascript"  src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/js/handle.js" ></script>    <!--设置和处理对象方法的文件，要修改设置，请进入这个文件 -->
+<style>
+    .cameraimage{
+        background:url('{$Think.const.SITE_IMAGE_URL}/fb-icon.png') no-repeat 4px 0px;width: 45px;height:30px;display: block;position: absolute;left: 40px;top: 25px;cursor: pointer;
+    }
+</style>
+<!-- 修改头像覆盖层 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div id="main" style="margin-top: 36px;margin-bottom: 36px;">
+                <div class="point">
+                </div>
+                <!--没加载方法前-->
+                <div id="SelectBox">
+                    <form    id="ShearPhotoForm" enctype="multipart/form-data" method="post"  target="postiframe">
+                        <a href="javascript:;" id="selectImage"><input type="file"  name="UpFile" /></a>
+                    </form>
+                    <a href="javascript:;" id="PhotoLoading"></a>
+                    <a href="javascript:;" id="camerasImage"></a>
+                </div>
+                <!--没加载方法前结束-->
+                <div id="relat">
+                    <div id="black">
+                    </div>
+                    <div id="movebox">
+                        <div id="smallbox">
+                            <img src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/images/default.gif" class="MoveImg" />
+                        </div>
+                        <i id="BottomRight">
+                        </i>
+                        <i id="TopRight">
+                        </i>
+                        <i id="Bottomleft">
+                        </i>
+                        <i id="Topleft">
+                        </i>
+                        <i id="Topmiddle">
+                        </i>
+                        <i id="leftmiddle">
+                        </i>
+                        <i id="Rightmiddle">
+                        </i>
+                        <i id="Bottommiddle">
+                        </i>
+                    </div>
+                    <img src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/images/default.gif" class="BigImg" />
+                </div>
+            </div>
+            <div id="Shearbar" style="margin-bottom: 20px;">
+                <a id="LeftRotate" href="javascript:;">
+                    <em>
+                    </em>
+                    向左旋转
+                </a>
+                <em class="hint L">
+                </em>
+                <div class="ZoomDist" id="ZoomDist">
+                    <div id="ZoomBar">
+                    </div>
+                        <span class="progress">
+                        </span>
+                </div>
+                <em class="hint R">
+                </em>
+                <a id="RightRotate" href="javascript:;">
+                    向右旋转
+                    <em>
+                    </em>
+                </a>
+                <p class="Psava">
+                    <a id="againIMG"  href="javascript:;">重新选择</a>
+                    <a id="saveShear" href="javascript:;">保存截图</a>
+                </p>
+            </div>
+            <!--主功能部份的标签请勿随意删除，除非你对shearphoto的原理了如指掌，否则JS找不到DOM对象，会给你抱出错误-->
+            <!--主功能部份-->
+            <!--相册-->
+            <div id="photoalbum"><!--假如你不要这个相册功能。把相册标签删除了，JS会抱出一个console.log()给你，注意查收，console.log的内容是告诉，某个DOM对象找不到-->
+                <h1>假如：这是一个相册--------试试点击图片</h1>
+                <i id="close"></i>
+                <ul>
+                    <li><img src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/1.jpg" serveUrl="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/1.jpg" /></li>
+                    <li><img src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/2.jpg" serveUrl="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/2.jpg" /></li>
+                    <li><img src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/3.jpg" serveUrl="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/3.jpg" /></li>
+                    <li><img src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/4.jpg" serveUrl="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/4.jpg" /></li>
+                    <li><img src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/5.jpg" serveUrl="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/5.jpg" /></li>
+                    <li><img src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/6.jpg" serveUrl="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/6.jpg" /></li>
+                    <li><img src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/7.jpg" serveUrl="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/7.jpg" /></li>
+                    <li><img src="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/8.jpg" serveUrl="{$Think.const.SITE_PLUGIN_URL}/ShearPhoto/file/photo/8.jpg" /></li>
+                </ul>
+            </div>
+            <!--相册-->
+            <!--拍照-->
+            <div id="CamBox"><!--假如你不要这个拍照功能。把拍照标签删除了，JS会抱出一个console.log()给你，注意查收，console.log的内容是告诉，某个DOM对象找不到-->
+                <p class="lens"></p>
+                <div id="CamFlash"></div>
+                <p class="cambar">
+                    <a href="javascript:;" id="CamOk"  >拍照</a>
+                    <a href="javascript:;" id="setCam">设置</a>
+                    <a href="javascript:;" id="camClose">关闭</a>
+                <div style="clear:both;"></div>
+                </p>
+                <div id="timing">3</div>
+            </div>
+            <!--拍照-->
+        </div>
+    </div>
+</div>
+<!-- 修改头像覆盖层  end -->
+<!-- 顶部导航栏 -->
+{~W('Nav/Test')}
+<!-- 顶部导航栏 结束-->
+<div class="container-fluid" style="margin-left: 5%;margin-right:5%;margin-top:16px;">
+   <div class="row" style="background:rgba(255,255,255,0.5) none repeat scroll 0 0 !important;">
+       <div class="col-md-12">
+            <div class="row">
+                <div  style="background:url('{$Think.const.SITE_IMAGE_URL}/fa.jpg') no-repeat;width: 100%px;height: 400px;background-size:100% 100%;">
+                    <div class="col-md-12">
+                        <i class="cameraimage"></i>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 290px">
+                        <div class="col-md-4">
+                            <div style="width:165px;height:145px;margin-bottom:13px;">
+                                <img src="{$userinfo.avator}" class="img-thumbnail" style="width:100%;height: 100%"/>
+                            </div>
+                            <i data-toggle="myModal" class="cameraimage" id="uploadavator" style="left: 28px;top: 100px;"></i>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row" style="margin-top:110px;">
+                                <ul class="nav navbar-nav" style="font-size: 16px">
+                                    <li><a href="#">时间线</a></li>
+                                    <li><a href="#">简介</a></li>
+                                    <li><a href="#">好友</a></li>
+                                    <li><a href="#">照片</a></li>
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">更多 <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="#">Action</a></li>
+                                            <li><a href="#">Another action</a></li>
+                                            <li><a href="#">Something else here</a></li>
+                                            <li role="separator" class="divider"></li>
+                                            <li><a href="#">Separated link</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div></div>
+                </div>
+
+            </div>
+       </div>
+   </div>
+   <div class="row" style="margin-top:1%;background:rgba(255,255,255,0.5) none repeat scroll 0 0 !important;">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">可能认识</div>
+            <div class="panel-body">
+                <div class="col-md-2">
+                    <div class="thumbnail">
+                        <img src="{$Think.const.SITE_IMAGE_URL}/photos/t8.jpg" alt="某某">
+                        <div class="caption">
+                            <h3 style="margin-top: 0px;padding-top: 0px;">Thumbnail label</h3>
+                            <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="thumbnail">
+                        <img src="{$Think.const.SITE_IMAGE_URL}/photos/t5.jpg" alt="某某">
+                        <div class="caption">
+                            <h3 style="margin-top: 0px;padding-top: 0px;">Thumbnail label</h3>
+                            <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="thumbnail">
+                        <img src="{$Think.const.SITE_IMAGE_URL}/photos/t4.jpg" alt="某某">
+                        <div class="caption">
+                            <h3 style="margin-top: 0px;padding-top: 0px;">Thumbnail label</h3>
+                            <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="thumbnail">
+                        <img src="{$Think.const.SITE_IMAGE_URL}/photos/t3.jpg" alt="某某">
+                        <div class="caption">
+                            <h3 style="margin-top: 0px;padding-top: 0px;">Thumbnail label</h3>
+                            <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+   <div class="row" style="background:rgba(255,255,255,0.5) none repeat scroll 0 0 !important;">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">Panel heading without title</div>
+                <div class="panel-body">
+                    Panel content
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">最近关注的路线</div>
+                <div class="panel-body">
+                    Panel content
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">最近参与的讨论</div>
+                <div class="panel-body">
+                    Panel content
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 feed-main">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a href="javascript:;"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 状态</a>
+                    <a href="javascript:;" class="upload-image" style="margin-left: 20px;"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span> 照片/视频</a>
+                    <a href="javascript:;" style="margin-left: 20px;"><span class="glyphicon glyphicon-link" aria-hidden="true"></span> 生活纪事</a>
+                </div>
+                <div class="panel-body">
+                    <form class="feed-form" action="{:U('Web/Feed/add')}" method="post">
+                    <div class="row upload-div hidden" style="height: 165px">
+                        <div style="text-align: center;height: 165px" id="uploadlist"></div>
+                    </div>
+                    <div class="row text-content" style="margin-bottom: 15px;">
+                        <textarea style="width: 100%;height: 150px;border: none;text-indent:20px;" placeholder="说点什么吧..." name="content"></textarea>
+                    </div>
+                    <div class="row uploaded-div">
+
+                    </div>
+                    <div class="row">
+                        <div style="height:1px;width:100%;background:#c4c4c4;overflow:hidden;"> </div>
+                    </div>
+                    <div class="row" style="margin-top:13px">
+                        <div class="col-md-12">
+                            <button style="border: none" type="button" class="btn btn-default"><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span> 表情</button>
+                            <button style="border: none" type="button" class="btn btn-default"><span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span> 位置</button>
+                            <button style="border: none" type="button" class="btn btn-default"><span class="glyphicon glyphicon glyphicon-time" aria-hidden="true"></span> 发布时间</button>
+                            <span style="font-size: 12px;margin-left: 50px;" class="tips"></span>
+                            <button type="submit" class="btn btn-info pull-right" style="margin-left: 10px;width: 120px"> 发 布 </button>
+                            <div class="btn-group pull-right">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="glyphicon glyphicon-user" aria-hidden="true"></span> 好友 <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Action</a></li>
+                                    <li><a href="#">Another action</a></li>
+                                    <li><a href="#">Something else here</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="#">Separated link</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+          <foreach name="feedlist" item="feed">
+            <div class="panel panel-default" feedid="{$feed.feedid}">
+               <div class="panel-body">
+               <div class="row">
+                   <div class="col-md-1"><img src="{$feed.avator}" style="width: 40px;height:40px;"/></div>
+                   <div class="col-md-9">
+                       <div class="row">
+                           <a href="#" style="font-size: 16px;">{$feed.nickname}</a> <small>更新了动态</small>
+                       </div>
+                       <div class="row"> {$feed.posttime} {$feed.appid}</div>
+                   </div>
+                   <div class="col-md-1"></div>
+               </div>
+               <div class="row feed-text" style="margin-top: 5px;margin-bottom: 5px;">
+                   <div class="col-md-12">
+                       <span>{$feed.content}</span>
+                   </div>
+               </div>
+               <div class="row">
+                   <foreach name="feed.picpath" item="image">
+                       <div class="col-md-{$feed.pic-col}">
+                           <img src="{$image}" class="img-responsive"/>
+                       </div>
+                   </foreach>
+               </div>
+               <div class="row">
+                   <ul class="nav navbar-nav ">
+                       <li class="feed-praise"><a href="javascript:;"> <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> 赞</a></li>
+                       <li class="feed-commnet"><a href="javascript:;"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> 评论</a></li>
+                       <li class="feed-share"><a href="javascript:;"><span class="glyphicon glyphicon-send" aria-hidden="true"></span> 分享</a></li>
+                   </ul>
+               </div>
+               <div class="row">
+                   <div style="height:1px;width:100%;background:#c4c4c4;overflow:hidden;"> </div>
+               </div>
+               <div class="row" style="margin-top:13px">
+                   <div class="col-md-1"><img src="{$feed.avator}" style="width:30px;height: 30px"/></div>
+                   <div class="col-md-11">
+                       <div class="input-group">
+                           <input type="text" class="form-control" placeholder="写评论...">
+                           <span class="input-group-addon"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span></span>
+                           <span class="input-group-addon"><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span></span>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           </div>
+          </foreach>
+        </div>
+    </div>
+</div>
+<include file="Public/foot"/>
+<!-- 引用控制层插件样式 -->
+<link rel="stylesheet" href="{$Think.const.SITE_PLUGIN_URL}/zyUpload/control/css/zyUpload.css" type="text/css">
+<!-- 引用核心层插件 -->
+<script src="{$Think.const.SITE_PLUGIN_URL}/zyUpload/core/zyFile.js"></script>
+<!-- 引用控制层插件 -->
+<script src="{$Think.const.SITE_PLUGIN_URL}/zyUpload/control/js/zyUpload.js"></script>
+<!-- 引用初始化JS -->
+<script src="{$Think.const.SITE_PLUGIN_URL}/zyUpload/core/diaoyong.js"></script>
+<script type="text/javascript" src="{$Think.const.SITE_JAVASCRIPT_URL}/jquery.form.min.js"></script>
+<script>
+$('.upload-image').on('click',function(){
+    $('.upload-div').toggleClass('hidden');
+    $('.text-content').toggleClass('hidden');
+});
+
+/**
+ * 图片上传成功回调函数
+ */
+function uploadback(index,picpath){
+    $html = '<div class="col-md-2" id="feed-upload-image_'+ index +'" style="margin-bottom: 3px;"><input type="hidden" name="picpath[]" value="'+ picpath +'"><div class="thumbnail"><img style="height:90px;" src="'+ picpath +'"></div></div>';
+    $('.uploaded-div').append($html);
+}
+
+/**
+ * 删除上传图片成功回调函数
+ */
+function deleteback(index){
+    $('.uploaded-div').find('#feed-upload-image_'+index).remove();
+}
+//发布动态
+$('.feed-form').submit(function() {
+    var options = {
+        beforeSubmit: function(){
+            $('.tips').html('<font color="#bbb">服务器君在努力搬运数据中..</font>');
+        },  //提交前的回调函数
+        success: function(response){
+            if(!response.status){
+                $('.tips').html('<font color="red">'+response.message+'</font>');
+            }else{
+                $('.tips').html('<font color="#2d78f4">'+response.message+'</font>');
+              /*  setTimeout(function(){
+                    window.location.href = "{:U('Web/Login/step')}";
+                },2000);*/
+            }
+        },      //提交后的回调函数
+        dataType: 'json'           //html(默认), xml, script, json...接受服务端返回的类型
+    }
+    $(this).ajaxSubmit(options);
+    return false; //阻止表单默认提交
+});
+
+//点赞
+$('.feed-main').delegate('.panel-default .feed-praise','click',function(){
+    $.post("{:U('Web/Feed/praise')}",{feedid:$(this).parents('.panel-default').attr('feedid')},function(response){
+        if(response.status){
+            alert(response.message);
+        }
+    });
+})
+
+    //修改头像弹出层
+    $('#uploadavator').click(function(){
+        $('#myModal').modal();
+    });
+</script>
+
+
